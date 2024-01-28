@@ -26,4 +26,15 @@ object AppModule {
             .build()
             .create(ReceiptApi::class.java)
     }
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ): LoginDatabase {
+        return Room.databaseBuilder(
+            context,
+            LoginDatabase::class.java,
+            LOGIN_DATABASE
+        ).build()
+    }
 }

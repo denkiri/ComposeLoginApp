@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LoginApp</string>
+    <string name="app_name">ComposeLoginApp</string>
     <string name="app_logo">EAPC</string>
     <string name="empty_string" />
     <!--Login-->
