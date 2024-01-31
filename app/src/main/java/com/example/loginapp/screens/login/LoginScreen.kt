@@ -1,9 +1,7 @@
 package com.example.loginapp.screens.login
 import android.content.Context
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
 import android.widget.Toast
-
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -25,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -33,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -41,13 +39,12 @@ import com.example.loginapp.R
 import com.example.loginapp.components.MediumTitleText
 import com.example.loginapp.components.NormalButton
 import com.example.loginapp.components.TitleText
+import com.example.loginapp.components.Toast
 import com.example.loginapp.data.Resource
 import com.example.loginapp.ui.theme.AppTheme
-import com.example.loginapp.ui.theme.LoginAppTheme
 import com.example.loginapp.screens.login.state.LoginUiEvent
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import com.example.loginapp.components.Toast
+
 
 @Composable
 fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hiltViewModel()) {
@@ -55,35 +52,73 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
         viewModel.loginState
 
     }
-    fun Context.showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-    var isLoading by remember { mutableStateOf(false) }
+
+
     // Display login information based on the result
-    val loginStateB by viewModel.loginResult.collectAsState()
+    val loginStateB by viewModel.loginRequestResult.collectAsState()
+
+    val navigateToFirstScreen = remember { mutableStateOf(false) }
+
+    // UI
+
+        // Use LaunchedEffect to navigate to the next screen once when loginStateB is a success
+        LaunchedEffect(loginStateB) {
+            if (loginStateB is Resource.Success && loginStateB.data != null) {
+                viewModel.saveProfile(loginStateB.data!!)
+                viewModel.updateLoginStatus(true)
+                navController.navigate("first_screen")
+                viewModel.resetStates()
+                Log.d("loginDataResponse", "ProfileData: ${loginStateB.data}")
+            }
+        }
+// Handle navigation back to the previous screen
+    // UI based on login state
     when (loginStateB) {
         is Resource.Idle -> {
-
+            // Handle idle state
         }
         is Resource.Loading -> {
-
             // Show loading indicator
             LinearProgressIndicator()
-
         }
         is Resource.Success -> {
-            // Show login success message or handle accordingly
-            isLoading=false
-            Log.d("loginuser", loginStateB.data!!.message)
-            viewModel.saveProfile(loginStateB.data!!)
-          Toast(message = loginStateB.data!!.message)
-
+            if (loginStateB.data != null) {
+               Toast(message = loginStateB.data!!.message)
+                // Handle success case
+                // You can perform any other UI-related actions here if needed
+            }
         }
         is Resource.Error -> {
-            // Show error message or handle accordingly
-           // Toast(message = loginStateB.)
+            // Handle error case
+            Toast(message = loginStateB.message.toString())
+            Log.d("loginDataResponse", "errorMessage: ${loginStateB.message.toString()}")
         }
     }
+
+
+//
+//    val profileState by viewModel.profileResult.collectAsState()
+//    when (profileState) {
+//        is Resource.Loading -> {
+//
+//            // Show loading indicator
+//            LinearProgressIndicator()
+//
+//        }
+//        is Resource.Success -> {
+//            // Show login success message or handle accordingly
+//            Toast(message = profileState.data.toString())
+//            Log.d("profileDataResponse", "ProfileData: ${profileState.data.toString()}")
+//            navController.navigate("first_screen")
+//        }
+//        is Resource.Error -> {
+//        }
+//
+//        else -> {}
+//    }
+
+
+
 
 
     Surface(modifier = Modifier
@@ -94,19 +129,6 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
 
-
-
-//            if (loginInfo.data == null) {
-//                Row() {
-//                    LinearProgressIndicator()
-//                    Text(text = "Loading...")
-//                }
-//
-//            }else{
-//            Greeting(loginInfo.data.profile.second_name)
-//            }
-            //  Log.d("Deets", "BookDetailsScreen: ${bookInfo.data.toString()}")
-       // Login()
             // Full Screen Content
             Column(
                 modifier = Modifier
@@ -184,10 +206,9 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                             onClick = {
                                 viewModel.onUiEvent(loginUiEvent = LoginUiEvent.Submit)
                                 if ( loginState.isLoginSuccessful){
-                                    isLoading = true
                                     viewModel.performLogin(viewModel.loginState.value.emailOrMobile.trim(),
-                                        viewModel.loginState.value.password.trim()
-                                    )
+                                        viewModel.loginState.value.password.trim())
+
 
                                 }
                             }
@@ -225,39 +246,7 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
 
 
 }
-
-@Composable
-fun Login() {
-
-        }
-
-
 fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview
-@Composable
-fun LoginScreenPreview() {
-    LoginAppTheme {
-        Login()
-    }
-
-}
-
-@Composable
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-fun LoginScreenDarkPreview() {
-    LoginAppTheme {
-        Login()
-    }
-
-
-}

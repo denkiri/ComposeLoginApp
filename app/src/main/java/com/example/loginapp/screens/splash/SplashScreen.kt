@@ -1,5 +1,6 @@
 package com.example.loginapp.screens.splash
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,14 +24,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.loginapp.R
+import com.example.loginapp.data.Resource
 import com.example.loginapp.navigation.Screens
+import com.example.loginapp.screens.login.LoginViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
-
+fun SplashScreen(navController: NavHostController,viewModel: LoginViewModel = hiltViewModel()) {
+    LaunchedEffect(Unit) {
+        viewModel.fetchLoginStatus()
+    }
+    val loginStatusResult by viewModel.loginStatusResultB.collectAsState()
     val scale = remember {
         Animatable(0f)
     }
@@ -50,8 +59,14 @@ fun SplashScreen(navController: NavHostController) {
                         .getInterpolation(it)
                 }))
         delay(2000L)
-
-            navController.navigate(Screens.LoginScreen.name)
+        Log.d("loginStatusResponse", "LoginStatus: ${loginStatusResult.data.toString()}")
+        if(loginStatusResult.data==true) {
+            navController.navigate("first_screen")
+            viewModel.resetStates()
+        }
+        else{
+            navController.navigate("login")
+           viewModel.resetStates()}
 
 
 
@@ -60,6 +75,7 @@ fun SplashScreen(navController: NavHostController) {
     }
 
     Splash(degrees = scale.value)
+
 }
 
 @Composable

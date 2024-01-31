@@ -4,7 +4,8 @@ import java.lang.IllegalArgumentException
 
 enum class Screens {
      SplashScreen,
-    LoginScreen;
+    LoginScreen,
+    HomeScreen;
 
 
     companion object {
@@ -12,6 +13,7 @@ enum class Screens {
           = when(route?.substringBefore("/")) {
               SplashScreen.name -> SplashScreen
              LoginScreen.name -> LoginScreen
+             HomeScreen.name ->HomeScreen
              null -> SplashScreen
              else -> throw IllegalArgumentException("Route $route is not recognized")
           }

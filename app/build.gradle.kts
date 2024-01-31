@@ -76,6 +76,8 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
+    // For preference Datastore
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
     // Room components
     implementation ("androidx.room:room-runtime:2.6.1")
     kapt ("androidx.room:room-compiler:2.6.1")

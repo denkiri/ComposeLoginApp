@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.loginapp.components.ErrorState
 import com.example.loginapp.data.Resource
+import com.example.loginapp.models.Profile
 import com.example.loginapp.repository.LoginRepository
 import com.example.loginapp.screens.login.state.LoginErrorState
 import com.example.loginapp.screens.login.state.LoginState
@@ -19,10 +20,17 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val repository: LoginRepository) : ViewModel(){
     var loginState = mutableStateOf(LoginState())
-
-    suspend fun loginMember(mobileNumber: String,password:String): Resource<ProfileData> {
-        return repository.loginMember(mobileNumber, password)
+    fun resetStates() {
+        // Reset or clear loginState here
+       loginState.value = LoginState() // Reset to initial value or null
+        _loginRequestResult.value = Resource.Idle()
+        _profileResult.value=Resource.Idle()
+        _loginStatusResultB.value=Resource.Idle()
     }
+
+    private val _isLoading = MutableStateFlow(true) // Initialize as true to start loading
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     fun onUiEvent(loginUiEvent: LoginUiEvent) {
         when (loginUiEvent) {
 
@@ -56,11 +64,9 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
             is LoginUiEvent.Submit -> {
                 val inputsValidated = validateInputs()
                 if (inputsValidated) {
+                    isLoading
                     // TODO Trigger login in authentication flow
-                    //Log.d("Login now","Successful")
                     loginState.value = loginState.value.copy(isLoginSuccessful = true)
-                  //  loginState.value = loginState.value.copy(emailOrMobile = loginState.value.emailOrMobile.trim())
-                   // loginState.value = loginState.value.copy(password = loginState.value.password.trim())
 
 
                 }
@@ -108,25 +114,85 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
             }
         }
     }
-    private val _loginResult = MutableStateFlow<Resource<ProfileData>>(Resource.Idle())
-    val loginResult: StateFlow<Resource<ProfileData>> = _loginResult
-
+    private val _loginRequestResult = MutableStateFlow<Resource<ProfileData>>(Resource.Idle())
+    val loginRequestResult: StateFlow<Resource<ProfileData>> = _loginRequestResult
     fun performLogin(mobile: String, password: String) {
         viewModelScope.launch {
-            _loginResult.value = Resource.Loading() // Notify UI that login operation is in progress
+            _loginRequestResult.value = Resource.Loading() // Notify UI that login operation is in progress
             try {
                 val loginResponse = repository.loginMember(mobile, password)
                 if (loginResponse is Resource.Success) {
-                    _loginResult.value = Resource.Success(loginResponse.data!!)
+                    _isLoading.value = false
+                    _loginRequestResult.value = Resource.Success(loginResponse.data!!)
                 } else {
-                    _loginResult.value = Resource.Error("Login failed")
+                    _loginRequestResult.value = Resource.Error(loginResponse.message)
+                    _isLoading.value = false
                 }
             } catch (e: Exception) {
-                _loginResult.value = Resource.Error("Login failed: ${e.message}")
+                _isLoading.value = false
+                _loginRequestResult.value = Resource.Error("Login failed: ${e.message}")
+            }
+        }
+    }
+    private val _profileResult = MutableStateFlow<Resource<Profile>>(Resource.Idle())
+    val profileResult: StateFlow<Resource<Profile>> = _profileResult
+    fun getProfile() {
+        viewModelScope.launch {
+            try {
+                // Call the repository function to get LiveData<Resource<Profile>>
+                val profileLiveData = repository.getProfile()
+
+                // Observe the LiveData from the repository to handle Resource states
+                profileLiveData.observeForever { resource ->
+                    when (resource) {
+                        is Resource.Loading -> {
+                            _profileResult.value = Resource.Loading() // Notify UI that profile data is loading
+                        }
+                        is Resource.Success -> {
+                            // Update _profileResult with the success data
+                            _profileResult.value = resource
+                        }
+                        is Resource.Error -> {
+                            // Update _profileResult with the error message
+                            _profileResult.value = resource
+                        }
+
+                        else -> {}
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle any exceptions
+                _profileResult.value = Resource.Error("Error: ${e.message}")
             }
         }
     }
    fun saveProfile(data:ProfileData){
         repository.saveProfile(data)
     }
+    private val _loginStatusResult = MutableStateFlow<Resource<Unit>>(Resource.Idle())
+    fun updateLoginStatus(isLoggedIn: Boolean) {
+        viewModelScope.launch {
+            _loginStatusResult.value = Resource.Loading()
+            repository.setLoginStatus(isLoggedIn).collect { result ->
+                _loginStatusResult.value = result
+            }
+        }
+    }
+    private val _loginStatusResultB = MutableStateFlow<Resource<Boolean?>>(Resource.Idle())
+    val loginStatusResultB: StateFlow<Resource<Boolean?>> = _loginStatusResultB
+
+    fun fetchLoginStatus() {
+        viewModelScope.launch {
+            _loginStatusResultB.value = Resource.Loading()
+            repository.getLoginStatus().collect { result ->
+                _loginStatusResultB.value = result
+                _isLoading.value = false // Stop loading when successful
+                // Update loading state based on the result
+                if (result is Resource.Success) {
+                    _isLoading.value = false // Stop loading when successful
+                }
+            }
+        }
+    }
+
 }
