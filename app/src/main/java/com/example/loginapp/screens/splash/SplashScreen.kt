@@ -27,11 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.loginapp.R
-import com.example.loginapp.data.Resource
-import com.example.loginapp.navigation.Screens
 import com.example.loginapp.screens.login.LoginViewModel
 import kotlinx.coroutines.delay
-
 @Composable
 fun SplashScreen(navController: NavHostController,viewModel: LoginViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {
@@ -61,7 +58,7 @@ fun SplashScreen(navController: NavHostController,viewModel: LoginViewModel = hi
         delay(2000L)
         Log.d("loginStatusResponse", "LoginStatus: ${loginStatusResult.data.toString()}")
         if(loginStatusResult.data==true) {
-            navController.navigate("first_screen")
+            navController.navigate("home_screen")
             viewModel.resetStates()
         }
         else{

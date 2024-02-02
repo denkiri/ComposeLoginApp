@@ -1,5 +1,4 @@
 package com.example.loginapp.storage
-
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -8,7 +7,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-
 val Context.loginStatus: DataStore<Preferences> by preferencesDataStore(name = "login_status")
 
 object DataStoreKeys {

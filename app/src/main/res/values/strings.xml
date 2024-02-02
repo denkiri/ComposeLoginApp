@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ComposeLoginApp</string>
-    <string name="app_logo">EAPC</string>
+    <string name="app_logo">Dele Tech</string>
     <string name="empty_string" />
     <!--Login-->
     <string name="login_heading_text">Login</string>

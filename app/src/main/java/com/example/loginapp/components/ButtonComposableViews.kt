@@ -1,5 +1,4 @@
 package com.example.loginapp.components
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -16,8 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.loginapp.ui.theme.AppTheme
-import com.example.loginapp.ui.theme.LoginAppTheme
-
 @Composable
 fun NormalButton(
     modifier: Modifier = Modifier,

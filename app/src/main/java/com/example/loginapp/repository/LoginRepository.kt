@@ -11,13 +11,11 @@ import com.example.loginapp.models.ProfileData
 import com.example.loginapp.storage.LoginDatabase
 import com.example.loginapp.storage.daos.ProfileDao
 import com.example.loginapp.storage.getLoginStatus
-import com.example.loginapp.storage.loginStatus
 import com.example.loginapp.storage.setLoginStatus
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -54,9 +52,7 @@ class LoginRepository @Inject constructor(private val api: ReceiptApi,db:LoginDa
             data.profile.let { profileDao.insertProfile(it) }
         }
     }
-//    fun getProfile(): LiveData<Profile> {
-//        return profileDao.getProfile()
-//    }
+
     fun getProfile(): LiveData<Resource<Profile>> {
         val resultLiveData = MutableLiveData<Resource<Profile>>()
         resultLiveData.value = Resource.Loading() // Notify UI that data loading is in progress

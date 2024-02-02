@@ -1,5 +1,4 @@
 package com.example.loginapp.components
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -11,11 +10,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import com.example.loginapp.screens.login.showToast
 import kotlinx.coroutines.delay
-
 @Composable
 fun Toast(message: String, durationMillis: Int = 2000) {
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+    LocalContext.current
+    LocalLifecycleOwner.current
     var isVisible by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {

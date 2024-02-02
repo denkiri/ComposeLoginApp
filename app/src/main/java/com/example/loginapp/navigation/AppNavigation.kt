@@ -5,13 +5,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.loginapp.FirstScreen
-import com.example.loginapp.SecondScreen
-import com.example.loginapp.ThirdScreen
+import com.example.loginapp.screens.home.HomeScreen
 import com.example.loginapp.screens.login.LoginScreen
 import com.example.loginapp.screens.login.LoginViewModel
 import com.example.loginapp.screens.splash.SplashScreen
-
 @ExperimentalComposeUiApi
 @Composable
 fun AppNavigation() {
@@ -23,15 +20,9 @@ fun AppNavigation() {
              val loginViewModel = hiltViewModel<LoginViewModel>()
              SplashScreen(navController = navController, viewModel = loginViewModel)
          }
-        composable("first_screen") {
+        composable("home_screen") {
             val loginViewModel = hiltViewModel<LoginViewModel>()
-            FirstScreen(navController = navController, viewModel = loginViewModel)
-        }
-        composable("second_screen") {
-            SecondScreen(navController = navController)
-        }
-        composable("third_screen") {
-            ThirdScreen(navController = navController)
+            HomeScreen(navController = navController, viewModel = loginViewModel)
         }
         composable("login") {
             val loginViewModel = hiltViewModel<LoginViewModel>()

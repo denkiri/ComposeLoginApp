@@ -56,9 +56,6 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
 
     // Display login information based on the result
     val loginStateB by viewModel.loginRequestResult.collectAsState()
-
-    val navigateToFirstScreen = remember { mutableStateOf(false) }
-
     // UI
 
         // Use LaunchedEffect to navigate to the next screen once when loginStateB is a success
@@ -66,7 +63,7 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
             if (loginStateB is Resource.Success && loginStateB.data != null) {
                 viewModel.saveProfile(loginStateB.data!!)
                 viewModel.updateLoginStatus(true)
-                navController.navigate("first_screen")
+                navController.navigate("home_screen")
                 viewModel.resetStates()
                 Log.d("loginDataResponse", "ProfileData: ${loginStateB.data}")
             }
@@ -94,33 +91,6 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
             Log.d("loginDataResponse", "errorMessage: ${loginStateB.message.toString()}")
         }
     }
-
-
-//
-//    val profileState by viewModel.profileResult.collectAsState()
-//    when (profileState) {
-//        is Resource.Loading -> {
-//
-//            // Show loading indicator
-//            LinearProgressIndicator()
-//
-//        }
-//        is Resource.Success -> {
-//            // Show login success message or handle accordingly
-//            Toast(message = profileState.data.toString())
-//            Log.d("profileDataResponse", "ProfileData: ${profileState.data.toString()}")
-//            navController.navigate("first_screen")
-//        }
-//        is Resource.Error -> {
-//        }
-//
-//        else -> {}
-//    }
-
-
-
-
-
     Surface(modifier = Modifier
         .padding(3.dp)
         .fillMaxSize()) {

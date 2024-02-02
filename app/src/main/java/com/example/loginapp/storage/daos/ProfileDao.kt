@@ -3,7 +3,6 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import com.example.loginapp.models.Profile
-
 @Dao
 interface ProfileDao {
     @Query("SELECT *FROM Profile LIMIT 1")
