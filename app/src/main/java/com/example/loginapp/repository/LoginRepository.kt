@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.loginapp.data.Resource
 import com.example.loginapp.models.Profile
-import com.example.loginapp.network.ReceiptApi
+import com.example.loginapp.network.AuthApi
 import com.example.loginapp.models.ProfileData
 import com.example.loginapp.storage.LoginDatabase
 import com.example.loginapp.storage.daos.ProfileDao
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-class LoginRepository @Inject constructor(private val api: ReceiptApi,db:LoginDatabase,application: Application){
+class LoginRepository @Inject constructor(private val api: AuthApi, db:LoginDatabase, application: Application){
     private val profileDao: ProfileDao
     private val context: Context
 
@@ -27,22 +27,39 @@ class LoginRepository @Inject constructor(private val api: ReceiptApi,db:LoginDa
         context=application.applicationContext
         profileDao=db.profileDao()
     }
-    suspend fun loginMember(mobileNumber: String,password:String): Resource<ProfileData> {
+    suspend fun loginMember(email: String,password:String): Resource<ProfileData> {
         return try {
             Resource.Loading(data = true)
-            val response = api.loginMember(mobileNumber, password)
+            val response = api.loginMember(email, password)
+            Resource.Loading(data = false)
             if(!response.error){
                 Log.d("Response", "ProfileData: ${response.profile}")
-
-            }
-            Resource.Loading(data = false)
             Resource.Success(data = response)
-
+            }
+            else {
+            Resource.Error(message =response.message)
+            }
         }catch (exception: Exception) {
             Log.d("ErrorResponse", "Error: ${exception.message.toString()}")
             Resource.Error(message = exception.message.toString())
 
 
+        }
+    }
+    suspend fun registerMember(email: String,password:String): Resource<ProfileData> {
+        return try {
+            Resource.Loading(data = true)
+            val response = api.registerMember(email, password)
+            Resource.Loading(data = false)
+            if (!response.error) {
+                Log.d("Response", "ProfileData: ${response.profile}")
+                Resource.Success(data = response)
+            } else {
+                Resource.Error(message = response.message)
+            }
+        } catch (exception: Exception) {
+            Log.d("ErrorResponse", "Error: ${exception.message.toString()}")
+            Resource.Error(message = exception.message.toString())
         }
     }
     @OptIn(DelicateCoroutinesApi::class)
@@ -55,23 +72,18 @@ class LoginRepository @Inject constructor(private val api: ReceiptApi,db:LoginDa
 
     fun getProfile(): LiveData<Resource<Profile>> {
         val resultLiveData = MutableLiveData<Resource<Profile>>()
-        resultLiveData.value = Resource.Loading() // Notify UI that data loading is in progress
+        resultLiveData.value = Resource.Loading()
 
         try {
-            // Fetch profile data asynchronously
             val profileLiveData = profileDao.getProfile()
-
-            // Observe the profileLiveData to handle different states
             profileLiveData.observeForever { profile ->
-                // Check if the profile data is not null
                 profile?.let {
-                    resultLiveData.value = Resource.Success(profile) // Notify UI with success and provide the profile data
+                    resultLiveData.value = Resource.Success(profile)
                 } ?: run {
-                    resultLiveData.value = Resource.Error("Profile not found") // Notify UI with error if profile data is null
+                    resultLiveData.value = Resource.Error("Profile not found")
                 }
             }
         } catch (exception: Exception) {
-            // Handle exceptions if any
             resultLiveData.value = Resource.Error("Error: ${exception.message}")
         }
 

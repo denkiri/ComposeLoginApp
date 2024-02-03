@@ -141,7 +141,7 @@ private fun BizCard(profileData: Profile) {
 private fun ProfileInfo(profileData: Profile) {
     Column(modifier = Modifier.padding(5.dp)) {
         Text(
-            text = profileData.first_name + " " + profileData.second_name,
+            text = profileData.email,
             color = MaterialTheme.colorScheme.primary,
             fontStyle = FontStyle.Normal,
             style = MaterialTheme.typography.titleLarge,

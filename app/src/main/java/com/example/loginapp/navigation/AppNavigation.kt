@@ -8,6 +8,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.loginapp.screens.home.HomeScreen
 import com.example.loginapp.screens.login.LoginScreen
 import com.example.loginapp.screens.login.LoginViewModel
+import com.example.loginapp.screens.registration.RegisterScreen
+import com.example.loginapp.screens.registration.RegistrationViewModel
 import com.example.loginapp.screens.splash.SplashScreen
 @ExperimentalComposeUiApi
 @Composable
@@ -27,6 +29,10 @@ fun AppNavigation() {
         composable("login") {
             val loginViewModel = hiltViewModel<LoginViewModel>()
             LoginScreen(navController = navController,viewModel=loginViewModel)
+        }
+        composable("register") {
+            val registrationViewModel = hiltViewModel<RegistrationViewModel>()
+            RegisterScreen(navController = navController,viewModel=registrationViewModel)
         }
     }
 

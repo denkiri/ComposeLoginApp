@@ -1,9 +1,9 @@
 package com.example.loginapp.screens.login.state
 import com.example.loginapp.R
 import com.example.loginapp.components.ErrorState
-val emailOrMobileEmptyErrorState = ErrorState(
+val emailEmptyErrorState = ErrorState(
     hasError = true,
-    errorMessageStringResource = R.string.login_error_msg_empty_email_mobile
+    errorMessageStringResource = R.string.login_error_msg_empty_email
 )
 
 val passwordEmptyErrorState = ErrorState(

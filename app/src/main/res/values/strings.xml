@@ -12,10 +12,10 @@
     <string name="icon_password_hidden">Password Hidden</string>
 
     <!--Login Error Messages-->
-    <string name="login_error_msg_empty_email_mobile">Please enter your email or mobile number</string>
+    <string name="login_error_msg_empty_email">Please enter your email</string>
     <string name="login_error_msg_empty_password">Please enter your password</string>
     <string name="login_error_user_not_found">User not found </string>
-
+    <string name="navigate_back">Navigate to the previous screen</string>
     <!--Login Page - Register Section-->
     <string name="do_not_have_account">Don\'t have an account?</string>
     <string name="register">Register</string>

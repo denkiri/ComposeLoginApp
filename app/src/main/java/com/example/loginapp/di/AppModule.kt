@@ -1,7 +1,7 @@
 package com.example.loginapp.di
 import android.content.Context
 import androidx.room.Room
-import com.example.loginapp.network.ReceiptApi
+import com.example.loginapp.network.AuthApi
 import com.example.loginapp.storage.LoginDatabase
 import com.example.loginapp.utils.Constants
 import com.example.loginapp.utils.Constants.LOGIN_DATABASE
@@ -19,12 +19,12 @@ import javax.inject.Singleton
 object AppModule {
     @Singleton
     @Provides
-    fun provideReceiptApi(): ReceiptApi {
+    fun provideAuthApi(): AuthApi {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ReceiptApi::class.java)
+            .create(AuthApi::class.java)
     }
     @Provides
     @Singleton

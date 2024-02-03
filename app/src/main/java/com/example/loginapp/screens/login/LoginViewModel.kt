@@ -10,7 +10,7 @@ import com.example.loginapp.screens.login.state.LoginErrorState
 import com.example.loginapp.screens.login.state.LoginState
 import com.example.loginapp.models.ProfileData
 import com.example.loginapp.screens.login.state.LoginUiEvent
-import com.example.loginapp.screens.login.state.emailOrMobileEmptyErrorState
+import com.example.loginapp.screens.login.state.emailEmptyErrorState
 import com.example.loginapp.screens.login.state.passwordEmptyErrorState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,14 +35,14 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
         when (loginUiEvent) {
 
             // Email/Mobile changed
-            is LoginUiEvent.EmailOrMobileChanged -> {
+            is LoginUiEvent.EmailChanged -> {
                 loginState.value = loginState.value.copy(
-                    emailOrMobile = loginUiEvent.inputValue,
+                    email = loginUiEvent.inputValue,
                     errorState = loginState.value.errorState.copy(
-                        emailOrMobileErrorState = if (loginUiEvent.inputValue.trim().isNotEmpty())
+                        emailErrorState = if (loginUiEvent.inputValue.trim().isNotEmpty())
                             ErrorState()
                         else
-                            emailOrMobileEmptyErrorState
+                            emailEmptyErrorState
                     )
                 )
             }
@@ -81,7 +81,7 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
      * @return false -> inputs are invalid
      */
     private fun validateInputs(): Boolean {
-        val emailOrMobileString = loginState.value.emailOrMobile.trim()
+        val emailOrMobileString = loginState.value.email.trim()
         val passwordString = loginState.value.password
         return when {
 
@@ -89,7 +89,7 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
             emailOrMobileString.isEmpty() -> {
                 loginState.value = loginState.value.copy(
                     errorState = LoginErrorState(
-                        emailOrMobileErrorState = emailOrMobileEmptyErrorState
+                        emailErrorState = emailEmptyErrorState
                     )
                 )
                 false
@@ -107,7 +107,7 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
             // No errors
             else -> {
                 // Set default error state
-                loginState.value = loginState.value.copy(emailOrMobile = emailOrMobileString)
+                loginState.value = loginState.value.copy(email = emailOrMobileString)
 
                 loginState.value = loginState.value.copy(errorState = LoginErrorState())
                 true
@@ -116,11 +116,11 @@ class LoginViewModel @Inject constructor(private val repository: LoginRepository
     }
     private val _loginRequestResult = MutableStateFlow<Resource<ProfileData>>(Resource.Idle())
     val loginRequestResult: StateFlow<Resource<ProfileData>> = _loginRequestResult
-    fun performLogin(mobile: String, password: String) {
+    fun performLogin(email: String, password: String) {
         viewModelScope.launch {
             _loginRequestResult.value = Resource.Loading() // Notify UI that login operation is in progress
             try {
-                val loginResponse = repository.loginMember(mobile, password)
+                val loginResponse = repository.loginMember(email, password)
                 if (loginResponse is Resource.Success) {
                     _isLoading.value = false
                     _loginRequestResult.value = Resource.Success(loginResponse.data!!)

@@ -43,7 +43,6 @@ import com.example.loginapp.components.Toast
 import com.example.loginapp.data.Resource
 import com.example.loginapp.ui.theme.AppTheme
 import com.example.loginapp.screens.login.state.LoginUiEvent
-import androidx.compose.runtime.mutableStateOf
 
 
 @Composable
@@ -52,45 +51,33 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
         viewModel.loginState
 
     }
-
-
-    // Display login information based on the result
-    val loginStateB by viewModel.loginRequestResult.collectAsState()
-    // UI
-
-        // Use LaunchedEffect to navigate to the next screen once when loginStateB is a success
-        LaunchedEffect(loginStateB) {
-            if (loginStateB is Resource.Success && loginStateB.data != null) {
-                viewModel.saveProfile(loginStateB.data!!)
-                viewModel.updateLoginStatus(true)
-                navController.navigate("home_screen")
-                viewModel.resetStates()
-                Log.d("loginDataResponse", "ProfileData: ${loginStateB.data}")
-            }
+    val authState by viewModel.loginRequestResult.collectAsState()
+    LaunchedEffect(authState) {
+        if (authState is Resource.Success && authState.data != null) {
+            viewModel.saveProfile(authState.data!!)
+            viewModel.updateLoginStatus(true)
+            navController.navigate("home_screen")
+            viewModel.resetStates()
+            Log.d("loginDataResponse", "ProfileData: ${authState.data}")
         }
-// Handle navigation back to the previous screen
-    // UI based on login state
-    when (loginStateB) {
+    }
+    when (authState) {
         is Resource.Idle -> {
-            // Handle idle state
         }
         is Resource.Loading -> {
-            // Show loading indicator
             LinearProgressIndicator()
         }
         is Resource.Success -> {
-            if (loginStateB.data != null) {
-               Toast(message = loginStateB.data!!.message)
-                // Handle success case
-                // You can perform any other UI-related actions here if needed
+            if (authState.data != null) {
+                Toast(message = authState.data!!.message)
             }
         }
         is Resource.Error -> {
-            // Handle error case
-            Toast(message = loginStateB.message.toString())
-            Log.d("loginDataResponse", "errorMessage: ${loginStateB.message.toString()}")
+            Toast(message = authState.message.toString())
+            Log.d("loginDataResponse", "errorMessage: ${authState.message.toString()}")
         }
     }
+
     Surface(modifier = Modifier
         .padding(3.dp)
         .fillMaxSize()) {
@@ -98,8 +85,6 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
         Column(modifier = Modifier.padding(top = 12.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
-
-            // Full Screen Content
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -109,7 +94,6 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                // Main card Content for Login
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -121,7 +105,6 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                             .padding(bottom = AppTheme.dimens.paddingExtraLarge)
                     ) {
 
-                        // Heading Jetpack Compose
                         MediumTitleText(
                             modifier = Modifier
                                 .padding(top = AppTheme.dimens.paddingLarge)
@@ -129,8 +112,6 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                             text = stringResource(id = R.string.app_name),
                             textAlign = TextAlign.Center
                         )
-
-                        // Login Logo
                         AsyncImage(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -143,19 +124,15 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                                 .build(),
                             contentDescription = stringResource(id = R.string.login_heading_text)
                         )
-
-                        // Heading Login
                         TitleText(
                             modifier = Modifier.padding(top = AppTheme.dimens.paddingLarge),
                             text = stringResource(id = R.string.login_heading_text)
                         )
-
-                        // Login Inputs Composable
                         LoginInputs(
                             loginState = loginState,
-                            onEmailOrMobileChange = { inputString ->
+                            onEmailChange = { inputString ->
                                 viewModel.onUiEvent(
-                                    loginUiEvent = LoginUiEvent.EmailOrMobileChanged(
+                                    loginUiEvent = LoginUiEvent.EmailChanged(
                                         inputString
                                     )
                                 )
@@ -167,16 +144,14 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                                     )
                                 )
                             },
-                           // onForgotPasswordClick = onNavigateToForgotPassword
                         )
-                        // Login Submit Button
                         NormalButton(
                             modifier = Modifier.padding(top = AppTheme.dimens.paddingLarge),
                             text = stringResource(id = R.string.login_button_text),
                             onClick = {
                                 viewModel.onUiEvent(loginUiEvent = LoginUiEvent.Submit)
                                 if ( loginState.isLoginSuccessful){
-                                    viewModel.performLogin(viewModel.loginState.value.emailOrMobile.trim(),
+                                    viewModel.performLogin(viewModel.loginState.value.email.trim(),
                                         viewModel.loginState.value.password.trim())
 
 
@@ -186,22 +161,17 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
 
                     }
                 }
-
-                // Register Section
                 Row(
                     modifier = Modifier.padding(AppTheme.dimens.paddingNormal),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Don't have an account?
                     Text(text = stringResource(id = R.string.do_not_have_account))
-
-                    //Register
                     Text(
                         modifier = Modifier
                             .padding(start = AppTheme.dimens.paddingExtraSmall)
                             .clickable {
-                                // onNavigateToRegistration.invoke()
+                                navController.navigate("register")
                             },
                         text = stringResource(id = R.string.register),
                         color = MaterialTheme.colorScheme.primary
