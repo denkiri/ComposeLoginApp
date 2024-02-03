@@ -12,3 +12,9 @@ The app shows a clean way of handling login and registration state along with ne
 8. MVVM Architecture
 <img src="https://developer.android.com/static/topic/libraries/architecture/images/final-architecture.png" width="640" height="540">
 
+# Screenshots
+
+<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240203_225225.png" width="340" height="540">|
+
+
+
