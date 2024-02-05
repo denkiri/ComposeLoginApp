@@ -15,8 +15,10 @@ The app shows a clean way of handling login and registration state along with ne
 
 # Screenshots
 
-<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240203_225505.png" width="340" height="540">|<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240203_225524.png" width="340" height="540">
-<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240203_225225.png" width="340" height="540">|<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240203_225131.png" width="340" height="540">
+<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240203_225505.png" width="250" height="540">|<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240203_225524.png" width="250" height="540">
+<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240203_225225.png" width="250" height="540">|<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240203_225131.png" width="250" height="540">
+<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240205_112238.png" width="250" height="540">|<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240205_112313.png" width="250" height="540">
+<img src="https://github.com/denkiri/ComposeLoginApp/blob/master/Screenshot_20240205_112355.png" width="250" height="540">
 
 
 
