@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -77,7 +78,6 @@ fun HomeScreen(navController: NavController, viewModel: LoginViewModel = hiltVie
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
         ) {
             profileState.data?.let { BizCard(it) }
         }
@@ -91,7 +91,6 @@ private fun CreateImageProfile(modifier: Modifier=Modifier) {
             .padding(5.dp),
         shape = CircleShape,
         border = BorderStroke(0.5.dp, Color.LightGray),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
         shadowElevation = 4.dp
     ) {
         Image(
@@ -107,14 +106,11 @@ private fun BizCard(profileData: Profile) {
     Surface(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()) {
-        Card(modifier = Modifier
+        ElevatedCard(modifier = Modifier
             .width(200.dp)
             .height(390.dp)
             .padding(12.dp),
             shape = RoundedCornerShape(corner = CornerSize(15.dp)),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.onPrimary,
-            ),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 6.dp
             )) {

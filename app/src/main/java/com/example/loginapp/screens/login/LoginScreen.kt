@@ -79,9 +79,7 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
     }
 
     Surface(modifier = Modifier
-        .padding(3.dp)
         .fillMaxSize()) {
-
         Column(modifier = Modifier.padding(top = 12.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {

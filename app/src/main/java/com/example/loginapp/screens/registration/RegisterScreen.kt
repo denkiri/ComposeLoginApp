@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -65,7 +66,8 @@ fun RegisterScreen(navController: NavHostController, viewModel: RegistrationView
             Log.d("loginDataResponse", "errorMessage: ${authState.message.toString()}")
         }
     }
-
+    Surface(modifier = Modifier
+        .fillMaxSize()) {
         // Full Screen Content
         Column(
             modifier = Modifier
@@ -109,6 +111,10 @@ fun RegisterScreen(navController: NavHostController, viewModel: RegistrationView
                     /**
                      * Registration Inputs Composable
                      */
+
+                    /**
+                     * Registration Inputs Composable
+                     */
                     RegistrationInputs(
                         registrationState = registrationState,
                         onEmailIdChange = { inputString ->
@@ -148,6 +154,7 @@ fun RegisterScreen(navController: NavHostController, viewModel: RegistrationView
                         }
                     )
                 }
+            }
             }
         }
 
